@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Jihen Guerchi, ingénieure génie électrique et management de projet : systèmes énergétiques, embarqués et IoT.">
+<title>Portfolio Jihen Guerchi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: lab-bench dark page; each project is a live 3D test bench beside its spec sheet, alternating sides. */
+:root{
+  --ink:#0a1019;        /* page ground, blue-black */
+  --bench:#111a27;      /* raised surfaces */
+  --line:#223047;       /* hairlines */
+  --fg:#e6ebf2;
+  --muted:#8e9bb0;
+  --copper:#e2894d;     /* power, conductors */
+  --cyan:#6cd0dc;       /* data, storage */
+  --amber:#f2c14e;      /* sun */
+  --alert:#ff5d4a;
+  --f-display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--ink);color:var(--fg);font:16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--copper);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--ink) 82%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
+.mono{font-family:var(--f-display);font-weight:800;font-size:20px;letter-spacing:-.02em;text-decoration:none}
+.mono span{color:var(--copper)}
+.nav ul{display:flex;gap:22px;list-style:none;margin:0;padding:0;font-size:14px}
+.nav a{text-decoration:none;color:var(--muted)}
+.nav a:hover{color:var(--fg)}
+@media (max-width:640px){.nav ul{gap:14px;font-size:13px}.nav li.opt{display:none}}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1fr 1.05fr;gap:40px;align-items:center;padding-block:56px 40px}
+.eyebrow{font:500 12px/1.4 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--copper)}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(46px,7.4vw,92px);line-height:.95;letter-spacing:-.035em;margin:14px 0 20px;text-wrap:balance}
+h1 em{font-style:normal;color:transparent;-webkit-text-stroke:1.5px var(--fg)}
+.lead{color:var(--muted);font-size:18px;max-width:52ch;margin:0 0 28px}
+.lead strong{color:var(--fg);font-weight:500}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:999px;font:600 15px var(--f-body);text-decoration:none;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer;transition:border-color .2s,background .2s}
+.btn:hover{border-color:var(--copper)}
+.btn.primary{background:var(--copper);border-color:var(--copper);color:#1a0e05}
+.btn.primary:hover{background:#ee9a60}
+.stats{display:flex;flex-wrap:wrap;gap:28px;margin-top:36px;padding-top:24px;border-top:1px solid var(--line)}
+.stat b{display:block;font:800 30px/1 var(--f-display);letter-spacing:-.02em}
+.stat span{font:12px var(--f-mono);color:var(--muted);letter-spacing:.04em}
+.avail{display:inline-flex;align-items:center;gap:8px;font:500 13px var(--f-mono);color:var(--cyan);margin-bottom:6px}
+.avail i{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 0 var(--cyan);animation:ping 2s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--cyan) 60%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
+@media (prefers-reduced-motion:reduce){.avail i{animation:none}}
+
+/* stages (3D canvases) */
+.stage{position:relative;margin:0;aspect-ratio:4/3;max-width:100%;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  background:radial-gradient(120% 90% at 50% 20%,#18263a 0%,var(--bench) 45%,var(--ink) 100%)}
+.stage canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:pan-y}
+.stage canvas:active{cursor:grabbing}
+.hero .stage{aspect-ratio:1/1;border:none;background:radial-gradient(60% 55% at 50% 50%,#17243a 0%,transparent 70%)}
+.hud{position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:6px;pointer-events:none;max-width:calc(100% - 24px)}
+.hud .row{display:flex;flex-wrap:wrap;gap:6px}
+.chip-h{font:500 11.5px/1 var(--f-mono);padding:7px 9px;border-radius:7px;background:color-mix(in srgb,var(--ink) 78%,transparent);border:1px solid var(--line);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip-h b{color:var(--fg);font-weight:500}
+.chip-h.c b{color:var(--copper)} .chip-h.y b{color:var(--cyan)} .chip-h.s b{color:var(--amber)}
+.chip-h.alert{border-color:var(--alert);color:var(--alert)} .chip-h.alert b{color:var(--alert)}
+.ctrl{position:absolute;left:12px;right:12px;bottom:12px;display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;background:color-mix(in srgb,var(--ink) 80%,transparent);border:1px solid var(--line);font:12px var(--f-mono);color:var(--muted)}
+.ctrl input{flex:1;min-width:0;accent-color:var(--copper)}
+.ctrl output{color:var(--fg);min-width:6ch;text-align:right;font-variant-numeric:tabular-nums}
+.hint{position:absolute;right:12px;top:12px;font:11px var(--f-mono);color:var(--muted);opacity:.8;pointer-events:none}
+.stage.has-ctrl .hint{top:12px}
+.fallback{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font:13px var(--f-mono);padding:20px;text-align:center}
+
+/* section headings */
+section{padding-block:64px}
+.sec-head{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:40px;border-bottom:1px solid var(--line);padding-bottom:18px}
+h2{font-family:var(--f-display);font-weight:800;font-size:clamp(32px,4.6vw,52px);letter-spacing:-.03em;line-height:1;margin:8px 0 0}
+.sec-head p{color:var(--muted);max-width:44ch;margin:0;font-size:15px}
+
+/* projects */
+.projects{display:flex;flex-direction:column;gap:88px}
+.proj{display:grid;grid-template-columns:1.12fr 1fr;gap:44px;align-items:center}
+.proj:nth-child(even) .stage{order:2}
+.proj .body{min-width:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px 14px;font:500 12px var(--f-mono);color:var(--muted);letter-spacing:.04em}
+.meta .yr{color:var(--copper)}
+h3{font-family:var(--f-display);font-weight:600;font-size:clamp(26px,3.2vw,36px);line-height:1.08;letter-spacing:-.02em;margin:12px 0 6px;text-wrap:balance}
+.role{color:var(--cyan);font-size:15px;margin:0 0 16px}
+.proj p.desc{color:var(--muted);margin:0 0 16px;max-width:60ch}
+.proj ul.pts{list-style:none;margin:0 0 20px;padding:0;display:flex;flex-direction:column;gap:10px}
+.proj ul.pts li{position:relative;padding-left:22px;max-width:60ch}
+.proj ul.pts li::before{content:"";position:absolute;left:0;top:.72em;width:12px;height:2px;background:var(--copper)}
+.kpis{display:flex;flex-wrap:wrap;gap:24px;margin:0 0 20px}
+.kpi b{display:block;font:800 26px/1 var(--f-display);color:var(--fg);letter-spacing:-.02em}
+.kpi span{font:11.5px var(--f-mono);color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font:12px var(--f-mono);padding:5px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+
+/* timeline */
+.tl{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+.tl::before{content:"";position:absolute;left:0;right:0;top:9px;height:1px;background:var(--line)}
+.tl li{list-style:none;position:relative;padding:34px 18px 0 0;min-width:0}
+.tl li::before{content:"";position:absolute;left:0;top:3px;width:13px;height:13px;border-radius:50%;background:var(--ink);border:2px solid var(--copper)}
+.tl li.now::before{background:var(--copper)}
+.tl .d{font:500 12px var(--f-mono);color:var(--copper)}
+.tl h4{font:600 18px/1.25 var(--f-display);margin:6px 0 4px;letter-spacing:-.01em}
+.tl .s{color:var(--muted);font-size:14px;margin:0}
+.tl .x{color:var(--fg);font-size:13.5px;margin:8px 0 0;opacity:.85}
+.tl ol{margin:0;padding:0}
+@media (max-width:860px){
+  .tl{grid-template-columns:1fr}
+  .tl::before{left:6px;right:auto;top:0;bottom:0;width:1px;height:auto}
+  .tl li{padding:0 0 28px 34px}
+  .tl li::before{top:4px}
+}
+
+/* skills */
+.skills{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.sk{background:var(--ink);padding:24px;min-width:0}
+.sk h4{font:500 12px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--copper);margin:0 0 14px}
+.sk .tags{gap:7px}
+.sk .tag{color:var(--fg);border-color:#2a3a54}
+.extra{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+.box{border:1px solid var(--line);border-radius:16px;padding:24px;min-width:0}
+.box h4{font:500 12px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--copper);margin:0 0 14px}
+.box ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.box li{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line);padding-bottom:10px}
+.box li:last-child{border-bottom:0;padding-bottom:0}
+.box li span{color:var(--muted);font:13px var(--f-mono);text-align:right}
+.bar{display:inline-block;width:70px;height:6px;border-radius:3px;background:var(--line);position:relative;vertical-align:middle;margin-left:8px}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--cyan)}
+
+/* contact */
+.contact{border:1px solid var(--line);border-radius:20px;padding:clamp(28px,5vw,56px);display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:center;
+  background:radial-gradient(80% 120% at 100% 0%,color-mix(in srgb,var(--copper) 16%,transparent),transparent 60%),var(--bench)}
+.contact h2{font-size:clamp(30px,4.4vw,50px)}
+.contact p{color:var(--muted);max-width:46ch}
+.links{display:flex;flex-direction:column;gap:10px;min-width:0}
+.lnk{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--ink);text-decoration:none;min-width:0}
+.lnk:hover{border-color:var(--copper)}
+.lnk small{display:block;font:11px var(--f-mono);color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.lnk .v{font:500 15px var(--f-mono);overflow-wrap:anywhere;user-select:all}
+.lnk button{font:600 13px var(--f-body);background:var(--copper);color:#1a0e05;border:0;border-radius:8px;padding:8px 12px;cursor:pointer;flex-shrink:0}
+footer{padding-block:32px 48px;color:var(--muted);font:12px var(--f-mono);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;padding-block:36px 24px;gap:12px}
+  .hero .stage{max-width:520px;width:100%;margin:0 auto;order:-1;aspect-ratio:4/3}
+  .proj{grid-template-columns:1fr;gap:24px}
+  .proj:nth-child(even) .stage{order:0}
+  .skills{grid-template-columns:1fr}
+  .extra,.contact{grid-template-columns:1fr}
+  section{padding-block:48px}
+  .projects{gap:64px}
+}
+@media (min-width:901px) and (max-width:1100px){.skills{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+
+<nav class="nav" aria-label="Navigation principale">
+  <div class="wrap">
+    <a class="mono" href="#top">J<span>.</span>G</a>
+    <ul>
+      <li><a href="#projets">Projets</a></li>
+      <li class="opt"><a href="#parcours">Parcours</a></li>
+      <li><a href="#competences">Compétences</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="top">
+  <div class="wrap">
+    <header class="hero">
+      <div>
+        <div class="avail"><i></i>Ouverte à un CDI · Île-de-France</div>
+        <div class="eyebrow">Génie électrique · Management de projet</div>
+        <h1>Jihen<br><em>Guerchi</em></h1>
+        <p class="lead">Ingénieure spécialisée en <strong>systèmes énergétiques et embarqués</strong> : chaînes de conversion PV et stockage, algorithmes MPPT, gestion d'énergie, architectures temps réel STM32 et supervision IoT. Double diplôme ENS Paris-Saclay et EDC Paris Business School.</p>
+        <div class="cta">
+          <a class="btn primary" href="#projets">Explorer les projets en 3D</a>
+          <a class="btn" href="#contact">Me contacter</a>
+        </div>
+        <div class="stats">
+          <div class="stat"><b>5</b><span>environnements R&amp;D</span></div>
+          <div class="stat"><b>+1 an</b><span>d'expérience cumulée</span></div>
+          <div class="stat"><b>2 × M2</b><span>ingénierie + management</span></div>
+          <div class="stat"><b>4</b><span>langues</span></div>
+        </div>
+      </div>
+      <figure class="stage" id="s-hero">
+        <canvas aria-label="Onde électrique animée en 3D, réagit au mouvement de la souris"></canvas>
+      </figure>
+    </header>
+  </div>
+
+  <section id="projets">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="eyebrow">Projets</div><h2>Bancs d'essai</h2></div>
+        <p>Chaque projet est rendu en 3D temps réel. Faites glisser une scène pour la faire pivoter ; certaines se pilotent.</p>
+      </div>
+
+      <div class="projects">
+
+        <article class="proj">
+          <figure class="stage has-ctrl" id="s-hybrid">
+            <canvas aria-label="Système hybride avec éolienne, panneau solaire, batterie et bus DC"></canvas>
+            <div class="hud">
+              <div class="row"><span class="chip-h c">Éolien <b id="h-pw">0 W</b></span><span class="chip-h s">PV <b>400 W</b></span></div>
+              <div class="row"><span class="chip-h">Bus DC <b>48 V</b></span><span class="chip-h y">SOC <b id="h-soc">80 %</b></span></div>
+            </div>
+            <label class="ctrl" for="wind">Vent<input id="wind" type="range" min="4" max="12" step="0.1" value="8"><output id="wind-o">8.0 m/s</output></label>
+            <span class="hint">Démo illustrative</span>
+          </figure>
+          <div class="body">
+            <div class="meta"><span class="yr">03 → 09/2026</span><span>FouFuSa Engineering &amp; Services</span><span>Tunisie / France</span></div>
+            <h3>Système hybride PV‑Éolien‑Batterie 800 W</h3>
+            <p class="role">Ingénieure R&amp;D · Contrôle intelligent et supervision énergétique</p>
+            <ul class="pts">
+              <li>Conception et modélisation complète sous MATLAB/Simulink, de l'architecture à la validation.</li>
+              <li>Algorithme MPPT Perturb &amp; Observe et stratégie de gestion énergétique (EMS).</li>
+              <li>Régulation du bus DC 48 V et convertisseur bidirectionnel pour la charge et décharge batterie.</li>
+              <li>Validation en environnement Smart Grid sur profil de vent variable de 4 à 12 m/s. Réglez le vent dans la scène.</li>
+            </ul>
+            <div class="kpis">
+              <div class="kpi"><b>400 W</b><span>PV exploitable</span></div>
+              <div class="kpi"><b>48 V</b><span>bus DC régulé</span></div>
+              <div class="kpi"><b>80 %</b><span>SOC moyen</span></div>
+            </div>
+            <div class="tags"><span class="tag">MATLAB/Simulink</span><span class="tag">MPPT P&amp;O</span><span class="tag">EMS</span><span class="tag">Convertisseur bidirectionnel</span><span class="tag">Smart Grid</span></div>
+          </div>
+        </article>
+
+        <article class="proj">
+          <figure class="stage" id="s-hand">
+            <canvas aria-label="Main prothétique articulée avec capteur IMU et ondes Bluetooth"></canvas>
+            <div class="hud">
+              <div class="row"><span class="chip-h y">IMU ax <b id="h-ax">0.00 g</b></span><span class="chip-h y">gyro <b id="h-gx">0 °/s</b></span></div>
+              <div class="row"><span class="chip-h c">STM32 <b>temps réel</b></span><span class="chip-h">BLE <b>actif</b></span></div>
+            </div>
+            <span class="hint">Glisser pour pivoter</span>
+          </figure>
+          <div class="body">
+            <div class="meta"><span class="yr">2024</span><span>Laboratoire LISV, Versailles</span><span>France</span></div>
+            <h3>Prothèse intelligente</h3>
+            <p class="role">Ingénieure R&amp;D · Conception d'une prothèse intelligente</p>
+            <ul class="pts">
+              <li>Interface homme-machine et architecture embarquée temps réel sur STM32.</li>
+              <li>Chaîne d'acquisition et de traitement des données IMU, communication BLE.</li>
+              <li>Architecture IoT (ROS, MQTT, LoRa) pour la supervision et la visualisation temps réel.</li>
+              <li>Validation expérimentale avec un kinésithérapeute : ergonomie, fiabilité, performances.</li>
+            </ul>
+            <div class="kpis">
+              <div class="kpi"><b>10</b><span>utilisateurs testés</span></div>
+              <div class="kpi"><b>4 mois</b><span>de R&amp;D</span></div>
+            </div>
+            <div class="tags"><span class="tag">STM32</span><span class="tag">IMU</span><span class="tag">BLE</span><span class="tag">ROS</span><span class="tag">MQTT</span><span class="tag">LoRa</span><span class="tag">IHM</span></div>
+          </div>
+        </article>
+
+        <article class="proj">
+          <figure class="stage" id="s-pv">
+            <canvas aria-label="Centrale photovoltaïque avec course du soleil sur une journée"></canvas>
+            <div class="hud">
+              <div class="row"><span class="chip-h s">Heure <b id="h-hr">12:00</b></span><span class="chip-h c">Production <b id="h-kw">0 kW</b></span></div>
+              <div class="row"><span class="chip-h">Puissance crête <b>34 kWc</b></span></div>
+            </div>
+            <span class="hint">Démo illustrative</span>
+          </figure>
+          <div class="body">
+            <div class="meta"><span class="yr">2023</span><span>ANME, Agence Nationale pour la Maîtrise de l'Énergie</span><span>Tunisie</span></div>
+            <h3>Installation PV raccordée au réseau de 34 kW</h3>
+            <p class="role">Ingénieure · Efficacité énergétique et énergies renouvelables</p>
+            <ul class="pts">
+              <li>Dimensionnement et simulation de l'installation sous PVsyst.</li>
+              <li>Optimisation des performances de la centrale.</li>
+              <li>Validation de la conformité des équipements.</li>
+            </ul>
+            <div class="kpis">
+              <div class="kpi"><b>34 kW</b><span>raccordés au réseau</span></div>
+              <div class="kpi"><b>PVsyst</b><span>simulation</span></div>
+            </div>
+            <div class="tags"><span class="tag">PVsyst</span><span class="tag">Dimensionnement</span><span class="tag">Raccordement réseau</span><span class="tag">Conformité</span></div>
+          </div>
+        </article>
+
+        <article class="proj">
+          <figure class="stage" id="s-fire">
+            <canvas aria-label="Réseau de capteurs IoT en forêt détectant une fumée"></canvas>
+            <div class="hud">
+              <div class="row"><span class="chip-h" id="h-fire">État <b>surveillance</b></span></div>
+              <div class="row"><span class="chip-h y">LoRa <b>6 nœuds</b></span><span class="chip-h">MQTT <b id="h-msg">0 msg</b></span></div>
+            </div>
+            <span class="hint">Glisser pour pivoter</span>
+          </figure>
+          <div class="body">
+            <div class="meta"><span class="yr">2023</span><span>WEBUP</span><span>Tunisie</span></div>
+            <h3>Détection précoce d'incendie par IoT</h3>
+            <p class="role">Ingénieure IoT et systèmes intelligents</p>
+            <ul class="pts">
+              <li>Nœuds capteurs ESP32 et STM32 : température, humidité, gaz et fumée.</li>
+              <li>Acquisition temps réel (ADC, I2C, UART), filtrage et prétraitement en C embarqué.</li>
+              <li>Transmission LoRa longue portée et publication MQTT vers une plateforme de supervision avec alertes par seuils.</li>
+              <li>Classification par IA pour la détection prédictive et la réduction des fausses alarmes.</li>
+            </ul>
+            <div class="tags"><span class="tag">ESP32</span><span class="tag">STM32</span><span class="tag">C embarqué</span><span class="tag">LoRa</span><span class="tag">MQTT</span><span class="tag">IA embarquée</span></div>
+          </div>
+        </article>
+
+        <article class="proj">
+          <figure class="stage" id="s-grid">
+            <canvas aria-label="Réseau basse tension avec transformateur, poteaux et maisons équipées de photovoltaïque"></canvas>
+            <div class="hud">
+              <div class="row"><span class="chip-h c">Départ <b>230 V</b></span><span class="chip-h">Bout de ligne <b id="h-v">225 V</b></span></div>
+              <div class="row"><span class="chip-h y">Injection PV <b id="h-inj">0 kW</b></span></div>
+            </div>
+            <span class="hint">Démo illustrative</span>
+          </figure>
+          <div class="body">
+            <div class="meta"><span class="yr">2022</span><span>STEG, Société Tunisienne de l'Électricité et du Gaz</span><span>Tunisie</span></div>
+            <h3>Réseau BT intelligent et intégration du PV</h3>
+            <p class="role">Ingénieure · Systèmes électriques et Smart Grid</p>
+            <ul class="pts">
+              <li>Simulation de réseaux basse tension sous MATLAB/Simulink : load flow, chutes de tension, pertes en ligne.</li>
+              <li>Analyse de l'intégration du PV décentralisé et de la qualité de l'énergie (plan de tension, harmoniques).</li>
+              <li>Supervision SCADA : télémesures, alarmes et états des organes de coupure.</li>
+              <li>Conception et validation sous LTspice de convertisseurs buck et boost à commande MLI.</li>
+            </ul>
+            <div class="tags"><span class="tag">Load flow</span><span class="tag">MATLAB/Simulink</span><span class="tag">SCADA</span><span class="tag">LTspice</span><span class="tag">PWM</span><span class="tag">Qualité d'énergie</span></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="parcours">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="eyebrow">Formation</div><h2>Parcours</h2></div>
+        <p>Une base d'ingénieure en Tunisie, une spécialisation énergie en France, et un double diplôme en management de projet.</p>
+      </div>
+      <ol class="tl">
+        <li><div class="d">2019 – 2023</div><h4>Diplôme d'ingénieure, Génie Informatique Industriel</h4><p class="s">ENET'Com Sfax, Tunisie</p><p class="x">Lauréate du Prix Présidentiel en Technologie</p></li>
+        <li><div class="d">2024 – 2025</div><h4>M1 Électronique, Énergie Électrique et Automatique</h4><p class="s">Université de Versailles Saint-Quentin-en-Yvelines</p></li>
+        <li class="now"><div class="d">2025 – 09/2026</div><h4>M2 Systèmes Électriques pour l'Énergie et la Mobilité</h4><p class="s">ENS Paris-Saclay</p><p class="x">Conversion d'énergie, machines électriques, réseaux intelligents, électrification de la mobilité</p></li>
+        <li class="now"><div class="d">2025 – 09/2026</div><h4>MSc 2 Management de Projet, double diplôme</h4><p class="s">EDC Paris Business School</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="competences">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="eyebrow">Boîte à outils</div><h2>Compétences</h2></div>
+      </div>
+      <div class="skills">
+        <div class="sk"><h4>Énergie &amp; électrotechnique</h4><div class="tags"><span class="tag">Convertisseurs AC/DC, DC/DC</span><span class="tag">PWM</span><span class="tag">MPPT</span><span class="tag">EMS</span><span class="tag">Régulation bus DC</span><span class="tag">Gestion batterie (SOC)</span><span class="tag">PVsyst</span><span class="tag">Smart Grid</span><span class="tag">SCADA</span></div></div>
+        <div class="sk"><h4>Embarqué &amp; temps réel</h4><div class="tags"><span class="tag">STM32</span><span class="tag">ESP32</span><span class="tag">FPGA</span><span class="tag">ROS</span><span class="tag">Linux embarqué</span><span class="tag">Acquisition capteurs</span><span class="tag">IHM</span></div></div>
+        <div class="sk"><h4>Communication &amp; IoT</h4><div class="tags"><span class="tag">MQTT</span><span class="tag">LoRa</span><span class="tag">ZigBee</span><span class="tag">BLE</span><span class="tag">Wi-Fi</span><span class="tag">UART</span><span class="tag">SPI</span><span class="tag">I2C</span></div></div>
+        <div class="sk"><h4>Modélisation &amp; développement</h4><div class="tags"><span class="tag">MATLAB/Simulink</span><span class="tag">Python</span><span class="tag">C/C++</span><span class="tag">LTspice</span><span class="tag">Altium Designer</span><span class="tag">Eagle</span><span class="tag">ISIS</span><span class="tag">Routage PCB</span><span class="tag">Arcadia / Capella</span></div></div>
+        <div class="sk"><h4>Gestion de projet</h4><div class="tags"><span class="tag">Cadrage et planification</span><span class="tag">Pilotage des jalons</span><span class="tag">Coordination des parties prenantes</span><span class="tag">Plans de tests et validation</span></div></div>
+        <div class="sk"><h4>Cloud &amp; IA</h4><div class="tags"><span class="tag">AWS</span><span class="tag">Microsoft Azure</span><span class="tag">Azure AI</span><span class="tag">NVIDIA Jetson Nano</span></div></div>
+      </div>
+      <div class="extra">
+        <div class="box"><h4>Certifications</h4><ul>
+          <li>AWS Certified Cloud Practitioner<span>Cloud</span></li>
+          <li>Microsoft Azure AZ-900<span>Cloud</span></li>
+          <li>Microsoft Azure AI-900<span>IA</span></li>
+          <li>NVIDIA DLI, IA sur Jetson Nano<span>IA embarquée</span></li>
+        </ul></div>
+        <div class="box"><h4>Langues</h4><ul>
+          <li>Arabe<span>Maternelle<i class="bar"><i style="width:100%"></i></i></span></li>
+          <li>Français<span>C1<i class="bar"><i style="width:85%"></i></i></span></li>
+          <li>Anglais<span>B1<i class="bar"><i style="width:55%"></i></i></span></li>
+          <li>Allemand<span>B1<i class="bar"><i style="width:55%"></i></i></span></li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact">
+        <div>
+          <div class="eyebrow">Contact</div>
+          <h2>Construisons le système suivant.</h2>
+          <p>Je recherche un CDI en systèmes électriques, Smart Grid, IoT ou energy tech, ainsi qu'en conseil en management et stratégie.</p>
+        </div>
+        <div class="links">
+          <div class="lnk"><div style="min-width:0"><small>E-mail</small><span class="v" id="mail">jihenguerchi@gmail.com</span></div><button type="button" id="copy">Copier</button></div>
+          <a class="lnk" href="https://linkedin.com/in/jihen-guerchi" target="_blank" rel="noopener"><div style="min-width:0"><small>LinkedIn</small><span class="v">in/jihen-guerchi</span></div><span aria-hidden="true">↗</span></a>
+          <a class="lnk" href="https://github.com/jihenguerchi" target="_blank" rel="noopener"><div style="min-width:0"><small>GitHub</small><span class="v">jihenguerchi</span></div><span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <footer><span>© 2026 Jihen Guerchi</span><span>Scènes 3D temps réel</span></footer>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+/* copy email */
+const cb=document.getElementById('copy');
+cb.addEventListener('click',()=>{
+  const t=document.getElementById('mail').textContent;
+  const done=()=>{cb.textContent='Copié';setTimeout(()=>cb.textContent='Copier',1800)};
+  const sel=()=>{const r=document.createRange();r.selectNodeContents(document.getElementById('mail'));const s=getSelection();s.removeAllRanges();s.addRange(r);cb.textContent='Sélectionné'};
+  try{navigator.clipboard.writeText(t).then(done,sel)}catch(e){sel()}
+});
+
+if(!window.THREE){
+  document.querySelectorAll('.stage').forEach(f=>{const d=document.createElement('div');d.className='fallback';d.textContent='La scène 3D n\'a pas pu se charger.';f.appendChild(d)});
+  return;
+}
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const C={copper:0xe2894d,cyan:0x6cd0dc,amber:0xf2c14e,steel:0x8a97ab,light:0xc9d3e0,blade:0xe9eef5,ground:0x162234,dark:0x0e1622,alert:0xff5d4a,tree:0x2c4a3d,green:0x56d39a};
+const mat=(color,o={})=>new THREE.MeshStandardMaterial(Object.assign({color,roughness:.62,metalness:.18,flatShading:true},o));
+const glow=(color,i=.8)=>mat(color,{emissive:color,emissiveIntensity:i});
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function cellTex(){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');x.fillStyle='#16337a';x.fillRect(0,0,128,128);x.strokeStyle='#7aa2e0';x.lineWidth=2;for(let i=0;i<=128;i+=32){x.beginPath();x.moveTo(i,0);x.lineTo(i,128);x.stroke();x.beginPath();x.moveTo(0,i);x.lineTo(128,i);x.stroke()}const t=new THREE.CanvasTexture(c);return t}
+const pvTex=cellTex();
+function ground(r){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,.14,64),mat(C.ground,{flatShading:false}));m.position.y=-.07;
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(r,.015,6,96),new THREE.MeshBasicMaterial({color:C.copper,transparent:true,opacity:.5}));ring.rotation.x=Math.PI/2;
+  const g=new THREE.Group();g.add(m,ring);return g}
+function pulses(root,pts,n,color,size=.045,op=.3){
+  const curve=new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(...p)));
+  root.add(new THREE.Mesh(new THREE.TubeGeometry(curve,48,.014,6,false),new THREE.MeshBasicMaterial({color,transparent:true,opacity:op})));
+  const m=new THREE.MeshBasicMaterial({color});const arr=[];
+  for(let i=0;i<n;i++){const p=new THREE.Mesh(new THREE.SphereGeometry(size,8,8),m);root.add(p);arr.push(p)}
+  return{arr,curve,m,speed:.3,phase:0,update(dt,k=n){this.phase=(this.phase+dt*this.speed)%1;arr.forEach((p,i)=>{p.visible=i<k;p.position.copy(curve.getPointAt((this.phase+i/arr.length)%1))})}};
+}
+
+/* scene factory */
+const scenes=[];
+function makeScene(id,{cam=[6,4.6,6],target=[0,1,0],fov=38,drag=true}={}){
+  const fig=document.getElementById(id),canvas=fig.querySelector('canvas');
+  let renderer;
+  try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true})}catch(e){const d=document.createElement('div');d.className='fallback';d.textContent='WebGL indisponible sur cet appareil.';fig.appendChild(d);return null}
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+  renderer.outputEncoding=THREE.sRGBEncoding;
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(fov,4/3,.1,100);camera.position.set(...cam);camera.lookAt(...target);
+  scene.add(new THREE.HemisphereLight(0xcfe0ff,0x22180f,.85));
+  const dl=new THREE.DirectionalLight(0xffe6cc,1.05);dl.position.set(5,8,4);scene.add(dl);
+  const root=new THREE.Group();scene.add(root);
+  const s={fig,canvas,renderer,scene,camera,root,dl,visible:false,auto:drag,update:null,rot:-.5,vel:0,dragging:false,lastDrag:-1e9,target:new THREE.Vector3(...target)};
+  const size=()=>{const w=fig.clientWidth,h=fig.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();if(!s.visible||reduce)draw(s)};
+  new ResizeObserver(size).observe(fig);size();
+  new IntersectionObserver(e=>{s.visible=e[0].isIntersecting},{rootMargin:'100px'}).observe(fig);
+  if(drag){
+    let px=0;
+    canvas.addEventListener('pointerdown',e=>{s.dragging=true;px=e.clientX;s.vel=0;canvas.setPointerCapture(e.pointerId)});
+    canvas.addEventListener('pointermove',e=>{if(!s.dragging)return;const dx=e.clientX-px;px=e.clientX;s.rot+=dx*.01;s.vel=dx*.01;if(reduce)draw(s)});
+    const up=()=>{s.dragging=false;s.lastDrag=performance.now()};
+    canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',up);
+  }
+  scenes.push(s);return s;
+}
+function draw(s){s.root.rotation.y=s.rot;s.renderer.render(s.scene,s.camera)}
+
+/* ---------- HERO: AC waveform field ---------- */
+(function(){
+  const s=makeScene('s-hero',{cam:[0,2.6,8.5],target:[0,0,0],fov:42,drag:false});if(!s)return;
+  const NX=90,NZ=36,geo=new THREE.BufferGeometry(),pos=new Float32Array(NX*NZ*3),col=new Float32Array(NX*NZ*3);
+  const a=new THREE.Color(C.copper),b=new THREE.Color(C.cyan),tmp=new THREE.Color();
+  for(let i=0;i<NX;i++)for(let j=0;j<NZ;j++){const k=(i*NZ+j)*3;pos[k]=(i/(NX-1)-.5)*10;pos[k+2]=(j/(NZ-1)-.5)*4;tmp.copy(a).lerp(b,j/(NZ-1));col[k]=tmp.r;col[k+1]=tmp.g;col[k+2]=tmp.b}
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const pts=new THREE.Points(geo,new THREE.PointsMaterial({size:.055,vertexColors:true,transparent:true,opacity:.95}));s.root.add(pts);
+  // central ring = stator
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(1.25,.035,10,120),new THREE.MeshBasicMaterial({color:C.copper}));s.root.add(ring);
+  const ring2=new THREE.Mesh(new THREE.TorusGeometry(1.55,.012,6,120),new THREE.MeshBasicMaterial({color:C.cyan,transparent:true,opacity:.6}));s.root.add(ring2);
+  const core=new THREE.Mesh(new THREE.IcosahedronGeometry(.55,1),new THREE.MeshBasicMaterial({color:C.copper,wireframe:true}));s.root.add(core);
+  let mx=0,my=0;addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5},{passive:true});
+  s.rot=0;
+  s.update=(t)=>{
+    for(let i=0;i<NX;i++)for(let j=0;j<NZ;j++){const k=(i*NZ+j)*3,x=pos[k],z=pos[k+2];const env=Math.exp(-(z*z)*.25);
+      pos[k+1]=Math.sin(x*1.3-t*2.2+z*.6)*.75*env+Math.sin(x*3.9-t*3.1)*.12*env-.0}
+    geo.attributes.position.needsUpdate=true;
+    ring.rotation.set(Math.PI/2.3+Math.sin(t*.5)*.15,t*.4,0);ring2.rotation.set(Math.PI/2+.3,-t*.25,t*.2);
+    core.rotation.set(t*.3,t*.5,0);
+    s.camera.position.x+=(mx*3-s.camera.position.x)*.05;s.camera.position.y+=(2.6-my*2-s.camera.position.y)*.05;s.camera.lookAt(0,0,0);
+  };
+})();
+
+/* ---------- HYBRID PV-WIND-BATTERY ---------- */
+(function(){
+  const s=makeScene('s-hybrid',{cam:[5.6,3.9,5.6],target:[0,1.1,0]});if(!s)return;const R=s.root;
+  R.add(ground(3.3));
+  const tw=new THREE.Group();tw.position.set(-1.5,0,-.6);R.add(tw);
+  const tower=new THREE.Mesh(new THREE.CylinderGeometry(.05,.11,2.8,14),mat(C.light));tower.position.y=1.4;tw.add(tower);
+  const nac=new THREE.Mesh(new THREE.BoxGeometry(.46,.2,.22),mat(C.light));nac.position.set(-.06,2.85,0);tw.add(nac);
+  const rotor=new THREE.Group();rotor.position.set(.22,2.85,0);tw.add(rotor);
+  rotor.add(new THREE.Mesh(new THREE.SphereGeometry(.09,14,14),mat(C.copper)));
+  for(let i=0;i<3;i++){const a=new THREE.Group();a.rotation.x=i*2.0944;const b=new THREE.Mesh(new THREE.BoxGeometry(.03,1.25,.11),mat(C.blade));b.position.y=.66;a.add(b);rotor.add(a)}
+  const pv=new THREE.Group();pv.position.set(.5,0,1);R.add(pv);
+  [[-.7,.45],[.7,.45]].forEach(([x,h])=>{const l=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.9,8),mat(C.steel));l.position.set(x,.45,0);pv.add(l)});
+  const panel=new THREE.Mesh(new THREE.BoxGeometry(1.7,.04,1.05),mat(0xffffff,{map:pvTex,metalness:.4,roughness:.35,flatShading:false,emissive:0x1b3d8a,emissiveIntensity:.25}));panel.position.y=.9;panel.rotation.x=-.5;pv.add(panel);
+  const bat=new THREE.Group();bat.position.set(1.55,0,-1);R.add(bat);
+  const shell=new THREE.Mesh(new THREE.BoxGeometry(.72,1.12,.52),mat(C.light,{transparent:true,opacity:.18}));shell.position.y=.56;bat.add(shell);
+  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(shell.geometry),new THREE.LineBasicMaterial({color:C.cyan}));edges.position.copy(shell.position);bat.add(edges);
+  const fg=new THREE.BoxGeometry(.6,1,.4);fg.translate(0,.5,0);const fill=new THREE.Mesh(fg,glow(C.cyan,.7));fill.position.y=.06;bat.add(fill);
+  [-.18,.18].forEach(x=>{const t=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,.1,10),mat(C.copper));t.position.set(x,1.17,0);bat.add(t)});
+  const bus=new THREE.Mesh(new THREE.BoxGeometry(.52,.3,.32),glow(C.copper,.35));bus.position.set(0,.15,-.25);R.add(bus);
+  const pw=pulses(R,[[-1.5,.05,-.6],[-.9,.12,-.5],[-.26,.15,-.25]],10,C.copper);
+  const pp=pulses(R,[[.5,.05,1],[.3,.12,.4],[0,.15,-.1]],8,C.amber);
+  const pb=pulses(R,[[.26,.15,-.3],[.9,.12,-.8],[1.55,.08,-1]],8,C.cyan);
+  const slider=document.getElementById('wind'),out=document.getElementById('wind-o'),hpw=document.getElementById('h-pw'),hsoc=document.getElementById('h-soc');
+  let wind=+slider.value,soc=.8,acc=0;
+  slider.addEventListener('input',()=>{wind=+slider.value;out.value=wind.toFixed(1)+' m/s';out.textContent=out.value;if(reduce)draw(s)});
+  const pW=()=>Math.round(400*Math.pow(Math.min(1,Math.max(0,(wind-3)/9)),2));
+  s.update=(t,dt)=>{
+    rotor.rotation.x+=wind*.55*dt;
+    const p=pW();pw.speed=.15+wind*.04;pw.update(dt,Math.max(1,Math.round(p/40)));pp.update(dt);pb.update(dt);
+    soc+=((p+400-560)/400)*dt*.01;soc=Math.min(.95,Math.max(.62,soc));fill.scale.y=soc;
+    pb.m.color.setHex(p+400>560?C.cyan:C.copper);
+    acc+=dt;if(acc>.15){acc=0;hpw.textContent=p+' W';hsoc.textContent=Math.round(soc*100)+' %'}
+  };
+})();
+
+/* ---------- PROSTHETIC HAND ---------- */
+(function(){
+  const s=makeScene('s-hand',{cam:[4.4,3.4,4.4],target:[0,1.7,0]});if(!s)return;const R=s.root;
+  R.add(ground(2.4));
+  const shellM=mat(0xd9e1ec,{roughness:.45,metalness:.25}),jointM=mat(C.copper,{metalness:.6,roughness:.35}),darkM=mat(0x2a3446);
+  const arm=new THREE.Group();R.add(arm);
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(.5,.6,.25,24),darkM);base.position.y=.12;arm.add(base);
+  const fore=new THREE.Mesh(new THREE.CylinderGeometry(.27,.34,1.6,20),shellM);fore.position.y=1.05;arm.add(fore);
+  const wrist=new THREE.Mesh(new THREE.TorusGeometry(.25,.06,10,28),jointM);wrist.rotation.x=Math.PI/2;wrist.position.y=1.9;arm.add(wrist);
+  const palm=new THREE.Mesh(new THREE.BoxGeometry(.86,.95,.3),shellM);palm.position.y=2.42;arm.add(palm);
+  // board + IMU chip
+  const board=new THREE.Mesh(new THREE.BoxGeometry(.36,.5,.03),mat(0x1d6b52));board.position.set(0,1.1,.33);arm.add(board);
+  const chip=new THREE.Mesh(new THREE.BoxGeometry(.16,.16,.04),glow(C.copper,.9));chip.position.set(0,1.16,.36);arm.add(chip);
+  const rings=[0,1,2].map(i=>{const r=new THREE.Mesh(new THREE.TorusGeometry(.18,.008,6,48),new THREE.MeshBasicMaterial({color:C.cyan,transparent:true}));r.position.copy(chip.position);arm.add(r);return r});
+  const fingers=[];const xs=[-.31,-.1,.11,.32],lens=[.68,.82,.78,.6];
+  xs.forEach((x,fi)=>{let parent=arm,y=2.9;const joints=[];
+    for(let k=0;k<3;k++){const j=new THREE.Group();j.position.set(k?0:x,k?lens[fi]/3:2.9,0);parent.add(j);
+      const ball=new THREE.Mesh(new THREE.SphereGeometry(.08,12,12),jointM);j.add(ball);
+      const seg=new THREE.Mesh(new THREE.BoxGeometry(.15,lens[fi]/3-.06,.15),shellM);seg.position.y=lens[fi]/6;j.add(seg);
+      joints.push(j);parent=j}
+    fingers.push(joints)});
+  const th0=new THREE.Group();th0.position.set(-.45,2.2,.05);th0.rotation.z=.85;arm.add(th0);
+  const tj=[];let tp=th0;for(let k=0;k<2;k++){const j=new THREE.Group();if(k)j.position.y=.28;tp.add(j);j.add(new THREE.Mesh(new THREE.SphereGeometry(.085,12,12),jointM));const sg=new THREE.Mesh(new THREE.BoxGeometry(.16,.24,.16),shellM);sg.position.y=.14;j.add(sg);tj.push(j);tp=j}
+  const hax=document.getElementById('h-ax'),hgx=document.getElementById('h-gx');let acc=0;
+  s.update=(t,dt)=>{
+    const g=(Math.sin(t*1.2)+1)/2;
+    fingers.forEach((js,fi)=>{const c=Math.max(0,Math.min(1,g*1.15-fi*.05));js[0].rotation.x=c*1.1;js[1].rotation.x=c*1.3;js[2].rotation.x=c*.9});
+    tj[0].rotation.x=g*.7;tj[1].rotation.x=g*.6;
+    arm.rotation.z=Math.sin(t*.6)*.06;
+    rings.forEach((r,i)=>{const u=((t*.6)+i/3)%1;r.scale.setScalar(1+u*4);r.material.opacity=(1-u)*.8});
+    acc+=dt;if(acc>.12){acc=0;hax.textContent=(Math.sin(t*1.2)*.42+Math.sin(t*5)*.03).toFixed(2)+' g';hgx.textContent=Math.round(Math.cos(t*1.2)*1.2*60)+' °/s'}
+  };
+})();
+
+/* ---------- PV PLANT 34 kW ---------- */
+(function(){
+  const s=makeScene('s-pv',{cam:[6.6,4.6,6.6],target:[0,.6,0]});if(!s)return;const R=s.root;
+  R.add(ground(4));
+  const pm=mat(0xffffff,{map:pvTex,metalness:.45,roughness:.3,flatShading:false,emissive:0x2a5cc4,emissiveIntensity:.1}),stand=mat(C.steel);
+  for(let r=0;r<4;r++)for(let c=0;c<6;c++){
+    const g=new THREE.Group();g.position.set((c-2.5)*1,0,(r-1.5)*1.15);R.add(g);
+    const l=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.45,6),stand);l.position.y=.22;g.add(l);
+    const p=new THREE.Mesh(new THREE.BoxGeometry(.9,.035,.62),pm);p.position.y=.48;p.rotation.x=.55;g.add(p)}
+  const inv=new THREE.Mesh(new THREE.BoxGeometry(.5,.6,.3),glow(C.copper,.3));inv.position.set(3.4,.3,0);R.add(inv);
+  const cable=pulses(R,[[2.6,.1,0],[3.0,.08,0],[3.25,.1,0]],4,C.copper,.04);
+  const sun=new THREE.Mesh(new THREE.SphereGeometry(.32,24,24),new THREE.MeshBasicMaterial({color:C.amber}));s.scene.add(sun);
+  const halo=new THREE.Mesh(new THREE.SphereGeometry(.55,24,24),new THREE.MeshBasicMaterial({color:C.amber,transparent:true,opacity:.18}));sun.add(halo);
+  const arc=new THREE.Mesh(new THREE.TorusGeometry(5.4,.01,4,96,Math.PI),new THREE.MeshBasicMaterial({color:C.amber,transparent:true,opacity:.25}));arc.position.z=4.2;s.scene.add(arc);
+  const hhr=document.getElementById('h-hr'),hkw=document.getElementById('h-kw');let acc=0;
+  s.rot=.6;
+  s.update=(t,dt)=>{
+    const u=(t/16)%1,a=.12+u*(Math.PI-.24),el=Math.sin(a);
+    sun.position.set(Math.cos(a)*5.4,Math.sin(a)*5.4,4.2);s.dl.position.copy(sun.position);s.dl.intensity=.25+el*1.1;
+    pm.emissiveIntensity=.05+el*.45;
+    cable.speed=.2+el*.8;cable.update(dt);
+    acc+=dt;if(acc>.15){acc=0;const h=6+u*14;hhr.textContent=String(Math.floor(h)).padStart(2,'0')+':'+String(Math.floor((h%1)*60)).padStart(2,'0');hkw.textContent=(34*.82*el).toFixed(1)+' kW'}
+  };
+})();
+
+/* ---------- FIRE DETECTION IoT ---------- */
+(function(){
+  const s=makeScene('s-fire',{cam:[5.8,4.4,5.8],target:[0,.6,0]});if(!s)return;const R=s.root;
+  const gnd=ground(3.6);gnd.children[0].material=mat(0x17271f,{flatShading:false});R.add(gnd);
+  const rnd=rng(7),treeM=mat(C.tree),trunkM=mat(0x4a3526);
+  for(let i=0;i<46;i++){const a=rnd()*Math.PI*2,r=.8+rnd()*2.6,h=.45+rnd()*.5;if(Math.abs(r-2.4)<.25&&((a/(Math.PI/3))%1<.25))continue;
+    const tr=new THREE.Group();tr.position.set(Math.cos(a)*r,0,Math.sin(a)*r);
+    const c=new THREE.Mesh(new THREE.ConeGeometry(h*.35,h,7),treeM);c.position.y=h/2+.1;const k=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.12,5),trunkM);k.position.y=.06;tr.add(c,k);R.add(tr)}
+  const gw=new THREE.Group();R.add(gw);
+  const mast=new THREE.Mesh(new THREE.CylinderGeometry(.04,.07,1.7,8),mat(C.light));mast.position.y=.85;gw.add(mast);
+  const top=new THREE.Mesh(new THREE.OctahedronGeometry(.13),glow(C.cyan,1));top.position.y=1.8;gw.add(top);
+  const nodes=[],links=[];
+  for(let i=0;i<6;i++){const a=i*Math.PI/3+.3,x=Math.cos(a)*2.4,z=Math.sin(a)*2.4;
+    const n=new THREE.Group();n.position.set(x,0,z);R.add(n);
+    const pole=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,.6,6),mat(C.steel));pole.position.y=.3;n.add(pole);
+    const box=new THREE.Mesh(new THREE.BoxGeometry(.2,.14,.13),mat(0xdfe5ee));box.position.y=.66;n.add(box);
+    const led=new THREE.Mesh(new THREE.SphereGeometry(.045,10,10),new THREE.MeshBasicMaterial({color:C.green}));led.position.y=.77;n.add(led);
+    nodes.push({n,led});
+    const L=pulses(R,[[x,.77,z],[x*.5,1.55,z*.5],[0,1.8,0]],3,C.cyan,.035,.22);L.speed=.25+i*.03;L.phase=i/6;links.push(L)}
+  const FI=2,fp=nodes[FI].n.position.clone().multiplyScalar(.82);
+  const flame=new THREE.Mesh(new THREE.ConeGeometry(.12,.35,8),glow(0xff7a2e,1.2));flame.position.set(fp.x,.18,fp.z);R.add(flame);
+  const NP=140,sg=new THREE.BufferGeometry(),sp=new Float32Array(NP*3),life=new Float32Array(NP),r2=rng(3);
+  for(let i=0;i<NP;i++)life[i]=r2();sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
+  const sm=new THREE.PointsMaterial({color:0x9aa3ad,size:.12,transparent:true,opacity:0,depthWrite:false});R.add(new THREE.Points(sg,sm));
+  const hf=document.getElementById('h-fire'),hm=document.getElementById('h-msg');let msgs=0,acc=0,state=-1;
+  s.update=(t,dt)=>{
+    const cyc=t%12,on=cyc>5,ramp=on?Math.min(1,(cyc-5)/1.5):Math.max(0,1-cyc/.8);
+    for(let i=0;i<NP;i++){life[i]+=dt*.35;if(life[i]>1)life[i]-=1;const l=life[i];sp[i*3]=fp.x+Math.sin(i*1.7+l*4)*.25*l+l*.4;sp[i*3+1]=.25+l*2.2;sp[i*3+2]=fp.z+Math.cos(i*2.3+l*3)*.25*l}
+    sg.attributes.position.needsUpdate=true;sm.opacity=.55*ramp;
+    flame.visible=ramp>.05;flame.scale.set(ramp,ramp*(.8+Math.sin(t*20)*.2),ramp);
+    links.forEach((L,i)=>{const alert=on&&i===FI;L.m.color.setHex(alert?C.alert:C.cyan);L.speed=alert?.9:.25+i*.03;L.update(dt)});
+    nodes.forEach((o,i)=>o.led.material.color.setHex(on&&i===FI?(Math.sin(t*14)>0?C.alert:0x551410):C.green));
+    top.rotation.y+=dt;msgs+=dt*(on?9:3);
+    acc+=dt;if(acc>.2){acc=0;hm.textContent=Math.floor(msgs)+' msg';const st=on?1:0;if(st!==state){state=st;hf.className='chip-h'+(on?' alert':'');hf.innerHTML=on?'Alerte <b>nœud 03 · fumée</b>':'État <b>surveillance</b>'}}
+  };
+})();
+
+/* ---------- LV SMART GRID ---------- */
+(function(){
+  const s=makeScene('s-grid',{cam:[6,4.5,6],target:[0,.6,0]});if(!s)return;const R=s.root;
+  R.add(ground(3.9));
+  const tr=new THREE.Mesh(new THREE.BoxGeometry(.6,.75,.55),glow(C.copper,.3));tr.position.set(-2.9,.37,0);R.add(tr);
+  [-.15,0,.15].forEach(z=>{const b=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,.25,8),mat(C.light));b.position.set(-2.9,.87,z);R.add(b)});
+  const poleM=mat(0x6d5a48),xs=[-2.1,-1.2,-.3,.6,1.5,2.4];
+  xs.forEach(x=>{const p=new THREE.Mesh(new THREE.CylinderGeometry(.03,.04,1.15,6),poleM);p.position.set(x,.57,0);R.add(p);const c=new THREE.Mesh(new THREE.BoxGeometry(.04,.04,.4),poleM);c.position.set(x,1.1,0);R.add(c)});
+  const feed=pulses(R,[[-2.9,.95,0],...xs.map(x=>[x,1.12,0])],14,C.copper,.045,.45);feed.speed=.12;
+  const houseM=mat(0xd4dbe6),roofM=mat(0x8e4f3a),pvM=mat(0xffffff,{map:pvTex,metalness:.4,roughness:.35,flatShading:false,emissive:0x2a5cc4,emissiveIntensity:.3});
+  const inj=[];
+  xs.forEach((x,i)=>{const z=i%2?1.25:-1.25,h=new THREE.Group();h.position.set(x,0,z);R.add(h);
+    const b=new THREE.Mesh(new THREE.BoxGeometry(.55,.42,.5),houseM);b.position.y=.21;h.add(b);
+    const rf=new THREE.Mesh(new THREE.ConeGeometry(.44,.3,4),roofM);rf.position.y=.57;rf.rotation.y=Math.PI/4;h.add(rf);
+    const hasPV=i%2===0||i===3;
+    if(hasPV){const p=new THREE.Mesh(new THREE.BoxGeometry(.34,.02,.22),pvM);p.position.set(0,.6,z>0?-.1:.1);p.rotation.x=z>0?-.55:.55;h.add(p)}
+    const L=pulses(R,[[x,.62,z*.9],[x,1.0,z*.45],[x,1.12,0]],3,hasPV?C.cyan:C.copper,.035,.25);
+    if(!hasPV){L.curve.points.reverse();L.curve.updateArcLengths()}
+    L.speed=hasPV?.35:.25;L.phase=i*.17;inj.push({L,hasPV})});
+  const hv=document.getElementById('h-v'),hi=document.getElementById('h-inj');let acc=0;
+  s.update=(t,dt)=>{
+    const sunf=(Math.sin(t*.4)+1)/2;
+    feed.update(dt);inj.forEach(o=>{o.L.update(dt,o.hasPV?Math.max(1,Math.round(sunf*3)):3)});
+    pvM.emissiveIntensity=.1+sunf*.4;
+    acc+=dt;if(acc>.2){acc=0;hi.textContent=(sunf*12).toFixed(1)+' kW';hv.textContent=(222+sunf*7+Math.sin(t*3)*.4).toFixed(1)+' V'}
+  };
+})();
+
+/* ---------- loop ---------- */
+let last=performance.now(),T=0;
+scenes.forEach(s=>{s.update&&s.update(2,0);draw(s)});
+if(reduce){
+  // static: render once per resize/drag; show a mid-cycle frame
+  scenes.forEach(s=>{s.update&&s.update(6,.016);draw(s)});
+  return;
+}
+function loop(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now;T+=dt;
+  for(const s of scenes){
+    if(!s.visible)continue;
+    if(!s.dragging){
+      if(Math.abs(s.vel)>.0005){s.rot+=s.vel;s.vel*=.92}
+      else if(now-s.lastDrag>2500&&s.auto)s.rot+=dt*.14;
+    }
+    s.update&&s.update(T,dt);draw(s);
+  }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+})();
+</script>
+
+</body>
+</html>
